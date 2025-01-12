@@ -52,18 +52,18 @@ const LinkTreeView = () => {
           return { ...item, enabled: !item.enabled }
         } else {
           toast.error('Url no válida')
+          return item
         }
       }
       return item
     })
-    setDevTreeLinks(updatedLink)
 
     let updateItems: SocialNetwork[] = []
     const selectedSocialNetwork = updatedLink.find(
       (link) => link.name === socialNetwork
     )
     if (selectedSocialNetwork?.enabled) {
-      const id = links.filter((link) => link.id).length + 1
+      const id = links.filter((link) => link.enabled).length + 1
       if (links.some((link) => link.name === socialNetwork)) {
         updateItems = links.map((link) => {
           if (link.name === socialNetwork) {
@@ -94,11 +94,7 @@ const LinkTreeView = () => {
             id: 0,
             enabled: false,
           }
-        } else if (
-          link.id > indexToUpdate &&
-          indexToUpdate !== 0 &&
-          link.id === 1
-        ) {
+        } else if (link.id > links[indexToUpdate].id) {
           return {
             ...link,
             id: link.id - 1,
@@ -108,7 +104,7 @@ const LinkTreeView = () => {
         }
       })
     }
-
+    setDevTreeLinks(updatedLink)
     queryClient.setQueryData(['user'], (prevData: User) => {
       return {
         ...prevData,
